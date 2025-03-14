@@ -1,7 +1,7 @@
-options(repos = c(
-  rtrees = 'https://daijiang.r-universe.dev',
-  CRAN = 'https://cloud.r-project.org'))
-install.packages("rtrees")
+#options(repos = c(
+#  rtrees = 'https://daijiang.r-universe.dev',
+#  CRAN = 'https://cloud.r-project.org'))
+#install.packages("rtrees")
 
 library(megatrees)
 library(rtrees)
@@ -13,11 +13,12 @@ library(dplyr)
 library(phytools)
 library(treedata.table)
 library(geiger)
+library(here)
 
 options(scipen=999) #turn off scientific notation
 
 #age data----
-agedat_combined1 <- read.csv(file="/Users/kiranbasava/DDL/AnAge/agedat_combined1.csv")
+agedat_combined1 <- read.csv(here("data", "raw", "agedat_combined1.csv"))
 
 #mammals----
 agedat_mammals <- agedat_combined1[agedat_combined1$class == "Mammalia",]
@@ -25,6 +26,7 @@ agemammals = get_tree(sp_list = agedat_mammals,
                      taxon = "mammal",
                      scenario = "at_basal_node",
                      show_grafted = TRUE)
+
 sum(test_tree[[1]]$tip.label %in% agedat_mammals$species) #1252 species match
 
 d0 <- agedat_mammals[c(26,24)]
@@ -36,8 +38,8 @@ mammalsgeig <- geiger::treedata(agemammals[[1]], d0, sort=TRUE, warnings=TRUE)
 mammalsgeig$phy
 View(mammalsgeig$data)
 
-write.nexus(mammalsgeig$phy, file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/agemammals.trees")
-write_delim(as.data.frame(mammalsgeig$data), file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/mammals_agedat.txt")
+write.nexus(mammalsgeig$phy, file=here("data", "processed", "agemammals.trees"))
+write_delim(as.data.frame(mammalsgeig$data), file=here("data", "processed", "mammals_agedat.txt"))
 
 ## test signal mammals----
 mammals.comp <- comparative.data(phy=agemammals[[50]], data=agedat_mammals[c(26,24)], names.col="species")
@@ -72,8 +74,8 @@ d <- d[c(1,3)]
 
 birdgeig <- geiger::treedata(agebirds[[1]], d, sort=TRUE, warnings=TRUE)
 
-write.nexus(birdgeig$phy, file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/agebirds.trees")
-write_delim(as.data.frame(birdgeig$data), file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/birds_agedat.txt")
+write.nexus(birdgeig$phy, file=here("data", "processed", "agebirds.trees"))
+write_delim(as.data.frame(birdgeig$data), file=here("data", "processed", "birds_agedat.txt"))
 
 ## birds signal----
 birds.comp <- comparative.data(agebirds[[77]], agedat_birds[c(26,24)], "species", vcv=TRUE)
@@ -104,8 +106,8 @@ d1 <- d1[c(1,3)]
 d1
 
 fishgeig <- geiger::treedata(agefish, d1, sort=TRUE, warnings=TRUE)
-write.nexus(fishgeig$phy, file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/agefish.trees")
-write_delim(as.data.frame(fishgeig$data), file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/fish_agedat.txt")
+write.nexus(fishgeig$phy, file=here("data", "processed", "agefish.trees"))
+write_delim(as.data.frame(fishgeig$data), file=here("data", "processed", "fish_agedat.txt"))
 
 ## fish signal----
 fish.comp <- comparative.data(fishgeig$phy, d1, names.col="species", vcv=TRUE)
@@ -135,8 +137,8 @@ d2$logage <- log(d2$mean_long)
 d2 <- d2[c(1,3)]
 
 amphigeig <- geiger::treedata(ageamphi[[1]], d2, sort=TRUE, warnings=TRUE)
-write.nexus(amphigeig$phy, file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/ageamphi.trees")
-write_delim(as.data.frame(amphigeig$data), file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/amphi_agedat.txt")
+write.nexus(amphigeig$phy, file=here("data", "processed", "ageamphi.trees"))
+write_delim(as.data.frame(amphigeig$data), file=here("data", "processed", "amphi_agedat.txt"))
 
 ## amphibians signal----
 amphi.comp <- comparative.data(amphigeig$phy, d2, names.col="species", vcv=TRUE)
@@ -178,8 +180,8 @@ d3$logage <- log(d3$mean_long)
 d3 <- d3[c(1,3)]
 
 repgeig <- geiger::treedata(agesquamates[[1]], d3, sort=TRUE, warnings=TRUE)
-write.nexus(repgeig$phy, file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/agesquamates.trees")
-write_delim(as.data.frame(repgeig$data), file="/Users/kiranbasava/DDL/AnAge/BayesTraitsV4/rep_agedat.txt")
+write.nexus(repgeig$phy, file=here("data", "processed", "agesquamates.trees"))
+write_delim(as.data.frame(repgeig$data), file=here("data", "processed", "rep_agedat.txt"))
 
 squam.comp <- comparative.data(agesquamates[[1]], d3, names.col="species", vcv=TRUE)
 squam.comp$phy
@@ -213,3 +215,6 @@ signals$p <- round(signals$p, digits=4)
 signals$count <- c(1252, 1266, 736, 152, 348)
 
 tab_df(signals, show.rownames=TRUE)
+
+write.csv(signals, here("data", "processed", "phylosignal.csv"))
+
