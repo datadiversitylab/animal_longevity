@@ -210,6 +210,10 @@ fC_squamK <- fitContinuous(multi2di(squam.comp$phy), logageS, model = "kappa")
 fC_squamK
 
 #molluscs----
+moll_tree <- read.tree(here("data", "raw", "Stoger_2013.tre"))
+agedat_moll <- agedat_combined1[agedat_combined1$phylum == "Mollusca",]
+row.names(agedat_moll) <- agedat_moll$species
+matched_moll <- geiger::treedata(moll_tree, agedat_moll, sort = TRUE, warnings = TRUE)
 
 #table----
 library(sjPlot)
