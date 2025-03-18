@@ -209,6 +209,27 @@ fC_squamL
 fC_squamK <- fitContinuous(multi2di(squam.comp$phy), logageS, model = "kappa")
 fC_squamK
 
+#bats----
+agedat_bats <-  agedat_combined1[agedat_combined1$order == "Chiroptera",]
+agebats = get_tree(sp_list = agedat_bats,
+                        taxon = "mammal",
+                        scenario = "at_basal_node",
+                        show_grafted = TRUE)
+
+d4 <- agedat_bats[c(26,24)] 
+rownames(d4) <- agedat_bats$species
+d4$logage <- log(d4$mean_long)
+d4 <- d4[c(1,3)]
+
+bats.comp <- comparative.data(agebats[[50]], d4, names.col = "species", vcv = TRUE)
+bats.agedat <- bats.comp$data
+
+batsigL <- phylosig(bats.comp$phy, bats.agedat$logage, method = "lambda", test = T)
+batsigL
+batsigK <- phylosig(bats.comp$phy, bats.agedat$logage, method = "K", test = T)
+batsigK
+
+
 #molluscs----
 moll_tree <- read.tree(here("data", "raw", "Stoger_2013.tre"))
 agedat_moll <- agedat_combined1[agedat_combined1$phylum == "Mollusca",]
