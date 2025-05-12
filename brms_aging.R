@@ -40,7 +40,6 @@ View(diet.comp$data)
 mammal_dietcomp <- diet.comp$data
 
 #mammals diet----
-
 m.mammal_agediet <- brms::brm(bf(logage ~ logmass + diet.new + (1 | gr(species, cov = cormat))),
             data = mammal_dietcomp,
             data2 = list(cormat=cormat),
