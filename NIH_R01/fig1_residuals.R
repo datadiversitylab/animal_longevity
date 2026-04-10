@@ -4,9 +4,9 @@ library(caper)
 library(plotrix)
 
 # Datasets
-tree <- read.nexus((here("DDL", "AnAge", "mine_animal_longevity", "data", "processed", "agemammals.trees")))
+tree <- read.nexus((here("NIH_R01", "agemammals.trees")))
 
-data <- read_csv((here("DDL", "AnAge", "mine_animal_longevity", "data", "processed", "mammal_agediet.csv"))) 
+data <- read_csv((here("NIH_R01", "mammal_agediet.csv"))) 
 
 # Match data to tree tips
 rownames(data) <- data$species

@@ -66,10 +66,12 @@ signals$group <- c("mammals", "birds", "fish", "amphibians", "reptiles")
 
 
 #or read in table of signals----
-signals <- read_csv(here("data", "processed", "phylosignal.csv"))
+library(readr)
+signals <- read_csv(here("NIH_R01", "phylosignal.csv"))
 
 #bar plot signals----
 library(ggplot2)
-ggplot(signals, aes(x=group, y = lambda, fill=group)) + 
+signalsplot <- ggplot(signals, aes(x=group, y = lambda, fill=group)) + 
   geom_bar(stat="identity")
 
+ggsave("signalsplot.jpeg", signalsplot, width=10, units="in")
